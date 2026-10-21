@@ -1,80 +1,506 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'dart:async';
 import 'package:flutter_tts/flutter_tts.dart';
-// ignore: unused_import
-import 'package:learn/pages/fruits.dart';
-import 'package:learn/utils/const_dimensions.dart';
 import 'package:learn/models/itemdata_model.dart';
 import 'package:learn/utils/constants.dart';
-import 'package:learn/utils/functions.dart';
 
-class ItemTile extends StatelessWidget {
-  final int index;
-  final List<ItemData> items;
-  final bool isTimerEnabled;
+class AtoZ extends StatefulWidget {
+  const AtoZ({Key? key}) : super(key: key);
 
-  const ItemTile({
-    Key? key,
-    required this.index,
-    required this.items,
-    required this.isTimerEnabled,
-  }) : super(key: key);
+  @override
+  State<AtoZ> createState() => _AtoZState();
+}
+
+class _AtoZState extends State<AtoZ> {
+  bool isTimerEnabled = false;
+  final List<ItemData> items = AppConstants.alphabetItems;
+  final FlutterTts flutterTts = FlutterTts();
+
+  static const List<Color> _letterColors = [
+    Color(0xFFEF4444), // A - Red
+    Color(0xFF3B82F6), // B - Blue
+    Color(0xFF10B981), // C - Emerald
+    Color(0xFFF59E0B), // D - Amber
+    Color(0xFF8B5CF6), // E - Violet
+    Color(0xFF06B6D4), // F - Cyan
+    Color(0xFF84CC16), // G - Lime
+    Color(0xFFD97706), // H - Ochre
+    Color(0xFFEC4899), // I - Pink
+    Color(0xFF6366F1), // J - Indigo
+    Color(0xFFEAB308), // K - Gold
+    Color(0xFFF97316), // L - Orange
+    Color(0xFF14B8A6), // M - Teal
+    Color(0xFF22C55E), // N - Green
+    Color(0xFFFF7A00), // O - Deep Orange
+    Color(0xFF0284C7), // P - Blue
+    Color(0xFFA855F7), // Q - Purple
+    Color(0xFFF43F5E), // R - Rose
+    Color(0xFF64748B), // S - Slate
+    Color(0xFF78716C), // T - Warm Grey
+    Color(0xFF0EA5E9), // U - Sky
+    Color(0xFF8B5CF6), // V - Violet
+    Color(0xFF10B981), // W - Emerald
+    Color(0xFFF59E0B), // X - Amber
+    Color(0xFFEAB308), // Y - Yellow
+    Color(0xFF6366F1), // Z - Indigo
+  ];
+
+  Color _getColor(int index) {
+    return _letterColors[index % _letterColors.length];
+  }
+
+  Future<void> _speak(String letter, String word) async {
+    try {
+      await flutterTts.setLanguage("EN-US");
+      await flutterTts.setPitch(1.0);
+      await flutterTts.setSpeechRate(0.45);
+      await flutterTts.speak("$letter for $word");
+    } catch (_) {
+      // Fallback silently if TTS engine is initializing
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final item = items[index];
-    return Card(
-      color: item.backgroundColor,
-      child: InkWell(
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return _PopupDialog(
-                items: items,
-                currentIndex: index,
-                isAutoNextEnabled: isTimerEnabled,
-              );
-            },
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                item.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final crossAxisCount = screenWidth > 600 ? 3 : 2;
+
+    return Scaffold(
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-                textAlign: TextAlign.center,
+              ],
+            ),
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back_rounded,
+                color: isDark ? Colors.white : const Color(0xFF1E293B),
+                size: 20,
               ),
-              LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                if (MediaQuery.of(context).orientation ==
-                    Orientation.portrait) {
-                  return SvgPicture.asset(
-                    item.iconAsset,
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    alignment: Alignment.center,
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)],
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.sort_by_alpha_rounded,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              "A - Z Alphabets",
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 14),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () {
+                setState(() {
+                  isTimerEnabled = !isTimerEnabled;
+                });
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                decoration: BoxDecoration(
+                  color: isTimerEnabled
+                      ? const Color(0xFF10B981)
+                      : (isDark
+                          ? const Color(0xFF1E293B)
+                          : const Color(0xFFE2E8F0)),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: isTimerEnabled
+                      ? [
+                          BoxShadow(
+                            color: const Color(0xFF10B981)
+                                .withValues(alpha: 0.35),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isTimerEnabled
+                          ? Icons.play_circle_filled_rounded
+                          : Icons.play_circle_outline_rounded,
+                      color: isTimerEnabled
+                          ? Colors.white
+                          : (isDark
+                              ? Colors.white70
+                              : const Color(0xFF475569)),
+                      size: 18,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      isTimerEnabled ? "Auto: ON" : "Auto",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: isTimerEnabled
+                            ? Colors.white
+                            : (isDark
+                                ? Colors.white70
+                                : const Color(0xFF475569)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          // Subtitle / Info Banner
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 14),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: isDark
+                        ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+                        : [const Color(0xFFEFF6FF), const Color(0xFFEEF2FF)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFDBEAFE),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF3B82F6),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Text("✨", style: TextStyle(fontSize: 16)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tap any letter to hear its sound!",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF1E3A8A),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            "Learn 26 phonics and vocabulary words",
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF3B82F6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3B82F6).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        "26 Letters",
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF2563EB),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // 2-Column Alphabet Grid
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+                childAspectRatio: 0.88,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final item = items[index];
+                  final color = _getColor(index);
+                  return _AlphabetTile(
+                    index: index,
+                    item: item,
+                    color: color,
+                    isDark: isDark,
+                    onTap: () {
+                      _speak(item.title, item.description);
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return _AlphabetFlashcardDialog(
+                            items: items,
+                            currentIndex: index,
+                            isAutoNextEnabled: isTimerEnabled,
+                            getColor: _getColor,
+                          );
+                        },
+                      );
+                    },
+                    onSpeakerTap: () {
+                      _speak(item.title, item.description);
+                    },
                   );
-                } else {
-                  return SvgPicture.asset(
-                    item.iconAsset,
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    alignment: Alignment.center,
-                  );
-                }
-              }),
-              const SizedBox(height: ConstantDimensions.heightExtraSmall / 2),
-              Text(item.description, textAlign: TextAlign.center),
-            ],
+                },
+                childCount: items.length,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AlphabetTile extends StatefulWidget {
+  final int index;
+  final ItemData item;
+  final Color color;
+  final bool isDark;
+  final VoidCallback onTap;
+  final VoidCallback onSpeakerTap;
+
+  const _AlphabetTile({
+    Key? key,
+    required this.index,
+    required this.item,
+    required this.color,
+    required this.isDark,
+    required this.onTap,
+    required this.onSpeakerTap,
+  }) : super(key: key);
+
+  @override
+  State<_AlphabetTile> createState() => _AlphabetTileState();
+}
+
+class _AlphabetTileState extends State<_AlphabetTile>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 100),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.94).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
+    final color = widget.color;
+    final isDark = widget.isDark;
+
+    return AnimatedBuilder(
+      animation: _scaleAnimation,
+      builder: (context, child) => Transform.scale(
+        scale: _scaleAnimation.value,
+        child: child,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
+          onTapDown: (_) => _controller.forward(),
+          onTapUp: (_) => _controller.reverse(),
+          onTapCancel: () => _controller.reverse(),
+          onTap: widget.onTap,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(22),
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              border: Border.all(
+                color: isDark
+                    ? const Color(0xFF334155).withValues(alpha: 0.6)
+                    : color.withValues(alpha: 0.2),
+                width: 1.4,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: (isDark ? Colors.black : color)
+                      .withValues(alpha: isDark ? 0.3 : 0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Top Header Row with Letter Badge & Speaker
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        "${item.title} ${item.title.toLowerCase()}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          color: color,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: widget.onSpeakerTap,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.volume_up_rounded,
+                          color: color,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const Spacer(),
+
+                // Center SVG Illustration
+                Center(
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: color.withValues(alpha: 0.08),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: SvgPicture.asset(
+                      item.iconAsset,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+
+                const Spacer(),
+
+                // Word Name Footer
+                Column(
+                  children: [
+                    Text(
+                      item.description,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      "${item.title} for ${item.description}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: color,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -82,26 +508,29 @@ class ItemTile extends StatelessWidget {
   }
 }
 
-class _PopupDialog extends StatefulWidget {
+class _AlphabetFlashcardDialog extends StatefulWidget {
   final List<ItemData> items;
   final int currentIndex;
   final bool isAutoNextEnabled;
+  final Color Function(int index) getColor;
 
-  const _PopupDialog({
+  const _AlphabetFlashcardDialog({
     Key? key,
     required this.items,
     required this.currentIndex,
     required this.isAutoNextEnabled,
+    required this.getColor,
   }) : super(key: key);
 
   @override
-  _PopupDialogState createState() => _PopupDialogState();
+  State<_AlphabetFlashcardDialog> createState() =>
+      _AlphabetFlashcardDialogState();
 }
 
-class _PopupDialogState extends State<_PopupDialog> {
+class _AlphabetFlashcardDialogState extends State<_AlphabetFlashcardDialog> {
   late FlutterTts flutterTts;
   late int currentIndex;
-  late Timer? timer;
+  Timer? timer;
   late bool isAutoNextEnabled;
 
   @override
@@ -113,10 +542,17 @@ class _PopupDialogState extends State<_PopupDialog> {
 
     _speakDescription();
     if (isAutoNextEnabled) {
-      timer = Timer.periodic(const Duration(seconds: 3), (Timer t) {
-        _nextItem();
-      });
+      _startTimer();
     }
+  }
+
+  void _startTimer() {
+    timer?.cancel();
+    timer = Timer.periodic(const Duration(seconds: 3), (Timer t) {
+      if (mounted) {
+        _nextItem();
+      }
+    });
   }
 
   @override
@@ -127,169 +563,250 @@ class _PopupDialogState extends State<_PopupDialog> {
 
   Future<void> _speakDescription() async {
     final currentItem = widget.items[currentIndex];
-    await flutterTts.setLanguage("EN-IN");
-    await flutterTts.speak(currentItem.title);
-    await flutterTts.speak(currentItem.description);
+    try {
+      await flutterTts.setLanguage("EN-US");
+      await flutterTts.setPitch(1.0);
+      await flutterTts.setSpeechRate(0.45);
+      await flutterTts.speak("${currentItem.title} for ${currentItem.description}");
+    } catch (_) {}
   }
 
   void _previousItem() {
-    setState(() {
-      if (currentIndex > 0) {
+    if (currentIndex > 0) {
+      setState(() {
         currentIndex--;
-        _speakDescription();
-      }
-    });
+      });
+      _speakDescription();
+      if (isAutoNextEnabled) _startTimer();
+    }
   }
 
   void _nextItem() {
-    setState(() {
-      if (currentIndex < widget.items.length - 1) {
+    if (currentIndex < widget.items.length - 1) {
+      setState(() {
         currentIndex++;
-        _speakDescription();
-      }
-    });
+      });
+      _speakDescription();
+      if (isAutoNextEnabled) _startTimer();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentItem = widget.items[currentIndex];
-    return AlertDialog(
-      contentPadding: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      content: Container(
-        padding: EdgeInsets.zero,
-        width: MediaQuery.of(context).size.width * 0.75,
-        height: MediaQuery.of(context).size.height * 0.75,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final item = widget.items[currentIndex];
+    final color = widget.getColor(currentIndex);
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 380),
         decoration: BoxDecoration(
-            color: currentItem.backgroundColor,
-            borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    currentItem.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 40,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: ConstantDimensions.heightMedium),
-                  GestureDetector(
-                    onTap: () {
-                      AppFunctions().readName(currentItem.description);
-                    },
-                    child: SvgPicture.asset(
-                      currentItem.iconAsset,
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      alignment: Alignment.center,
-                    ),
-                  ),
-                  const SizedBox(height: ConstantDimensions.heightMedium),
-                  Text(
-                    currentItem.description,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 28,
-                    ),
-                  ),
-                  const SizedBox(height: ConstantDimensions.heightMedium),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: _previousItem,
-                        child: const Text('Prev'),
-                      ),
-                      ElevatedButton(
-                        onPressed: _nextItem,
-                        child: const Text('Next'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(
+            color: color.withValues(alpha: 0.3),
+            width: 2,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class AtoZ extends StatefulWidget {
-  const AtoZ({Key? key}) : super(key: key);
-
-  @override
-  State<AtoZ> createState() => _AtoZState();
-}
-
-class _AtoZState extends State<AtoZ> {
-  bool isTimerEnabled = false;
-
-  List<ItemData> items = AppConstants.alphabetItems;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const Text(
-              'A-Z',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    // ignore: deprecated_member_use
-                    backgroundColor: MaterialStateProperty.all(
-                      isTimerEnabled ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isTimerEnabled = !isTimerEnabled;
-                    });
-                  },
-                  child: const Text(
-                    'Auto',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.3),
+              blurRadius: 24,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(9),
-        child: GridView.count(
-          crossAxisCount: MediaQuery.of(context).size.width ~/ 200,
-          childAspectRatio: 0.8,
-          children: List.generate(
-            items.length,
-            (index) => ItemTile(
-              index: index,
-              items: items,
-              isTimerEnabled: isTimerEnabled,
-            ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Top Bar with Index Pill & Close Button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      "${currentIndex + 1} of ${widget.items.length}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: color,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFF1F5F9),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 18,
+                        color: isDark ? Colors.white70 : const Color(0xFF475569),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              // Giant Playful Alphabet
+              Text(
+                "${item.title} ${item.title.toLowerCase()}",
+                style: TextStyle(
+                  fontSize: 52,
+                  fontWeight: FontWeight.w900,
+                  color: color,
+                  letterSpacing: 2,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // SVG Illustration with Pulse Glow
+              GestureDetector(
+                onTap: _speakDescription,
+                child: Container(
+                  width: 140,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color.withValues(alpha: 0.1),
+                    border: Border.all(
+                      color: color.withValues(alpha: 0.25),
+                      width: 2,
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(18),
+                  child: SvgPicture.asset(
+                    item.iconAsset,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Word Name
+              Text(
+                item.description,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "${item.title} is for ${item.description}",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Sound Replay Pill Button
+              InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: _speakDescription,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.volume_up_rounded, color: color, size: 18),
+                      const SizedBox(width: 6),
+                      Text(
+                        "Tap to Hear",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Navigation Buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        side: BorderSide(
+                          color: currentIndex > 0
+                              ? color
+                              : (isDark ? Colors.white24 : Colors.black12),
+                        ),
+                      ),
+                      onPressed: currentIndex > 0 ? _previousItem : null,
+                      icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                      label: const Text(
+                        "Prev",
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: color,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 3,
+                      ),
+                      onPressed: currentIndex < widget.items.length - 1
+                          ? _nextItem
+                          : null,
+                      icon: const Text(
+                        "Next",
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      label: const Icon(Icons.arrow_forward_rounded, size: 18),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(const AtoZ());
 }

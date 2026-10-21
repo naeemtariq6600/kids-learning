@@ -8,7 +8,7 @@ import 'package:learn/models/season_model.dart';
 // ignore: unused_import
 import 'package:learn/models/number_model.dart';
 import 'package:flutter/material.dart';
-import 'package:learn/pages/fruits.dart';
+import 'package:learn/models/fruit_model.dart';
 import '../models/colours_model.dart';
 import '../models/flower_model.dart';
 import '../models/planet_model.dart';
@@ -219,14 +219,14 @@ class AppConstants {
       name: 'Animals',
       description: 'Learn about animals and their sounds',
       thumbnailPath: AssetsPath.getAnimalImage(Animals.animals),
-      route: MaterialPageRoute(builder: (context) => AnimalsPage()),
+      route: MaterialPageRoute(builder: (context) => const AnimalsPage()),
       backgroundColor: const Color.fromARGB(194, 157, 82, 222),
     ),
     Module(
       name: 'Birds',
       description: 'Look out for Birds with their sounds',
       thumbnailPath: AssetsPath.getBirdImage(Birds.birds),
-      route: MaterialPageRoute(builder: (context) => BirdsPage()),
+      route: MaterialPageRoute(builder: (context) => const BirdsPage()),
       backgroundColor: const Color.fromARGB(193, 76, 207, 222),
     ),
     Module(
@@ -253,7 +253,7 @@ class AppConstants {
       name: 'Solar System',
       description: 'Learn about the solar system',
       thumbnailPath: "assets/images/solar/solar.gif",
-      route: MaterialPageRoute(builder: (context) => PlanetsPage()),
+      route: MaterialPageRoute(builder: (context) => const PlanetsPage()),
       backgroundColor: const Color.fromARGB(193, 226, 221, 70),
     ),
   ];

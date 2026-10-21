@@ -1,156 +1,344 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:learn/models/occupation_model.dart';
 import 'package:learn/utils/constants.dart';
-import 'package:learn/utils/functions.dart';
-
-import '../../utils/const_dimensions.dart';
 import 'occupations_test.dart';
 
-class OccupationPage extends StatelessWidget {
-  final FlutterTts flutterTts = FlutterTts();
-  final AudioPlayer audioPlayer = AudioPlayer();
-  OccupationPage({super.key});
+class OccupationPage extends StatefulWidget {
+  const OccupationPage({super.key});
+
+  @override
+  State<OccupationPage> createState() => _OccupationPageState();
+}
+
+class _OccupationPageState extends State<OccupationPage> {
+  final FlutterTts _flutterTts = FlutterTts();
+
+  Future<void> _speak(String text) async {
+    try {
+      await _flutterTts.stop();
+      await _flutterTts.setSpeechRate(0.42);
+      await _flutterTts.setPitch(1.08);
+      await _flutterTts.speak(text);
+    } catch (_) {}
+  }
+
+  void _showOccupationCard(int initialIndex) {
+    int index = initialIndex;
+    final occupations = AppConstants.occupations;
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (dialogContext, setDialogState) {
+            final occupation = occupations[index];
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 420, maxHeight: 560),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      occupation.backgroundColor,
+                      occupation.backgroundColor.withValues(alpha: 0.85),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(32),
+                  boxShadow: [
+                    BoxShadow(
+                      color: occupation.backgroundColor.withValues(alpha: 0.4),
+                      blurRadius: 24,
+                      offset: const Offset(0, 12),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(22),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.25),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            "${index + 1} / ${occupations.length}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: SvgPicture.asset(
+                          occupation.svgAsset,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      occupation.name,
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      occupation.description,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton.filledTonal(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withValues(alpha: 0.25),
+                            padding: const EdgeInsets.all(12),
+                          ),
+                          onPressed: () {
+                            setDialogState(() {
+                              index = (index - 1 + occupations.length) % occupations.length;
+                            });
+                            _speak(occupations[index].name);
+                          },
+                          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 28),
+                        ),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: occupation.backgroundColor,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            elevation: 4,
+                          ),
+                          onPressed: () => _speak("${occupation.name}. ${occupation.description}"),
+                          icon: const Icon(Icons.volume_up_rounded, size: 26),
+                          label: const Text(
+                            "Listen",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                        ),
+                        IconButton.filledTonal(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withValues(alpha: 0.25),
+                            padding: const EdgeInsets.all(12),
+                          ),
+                          onPressed: () {
+                            setDialogState(() {
+                              index = (index + 1) % occupations.length;
+                            });
+                            _speak(occupations[index].name);
+                          },
+                          icon: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 28),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final occupations = AppConstants.occupations;
+
     return Scaffold(
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF6F8FD),
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         title: const Text(
-          AppConstants.occupation,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          "Occupations 👷",
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 24),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.assessment),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const OccupationsTestPage()),
-              );
-            },
+          Container(
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              color: Colors.teal.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.quiz_rounded, color: Colors.teal),
+              tooltip: "Career Quiz",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const OccupationsTestPage()),
+                );
+              },
+            ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: OccupationWidget(
-            occupations: AppConstants.occupations,
-            flutterTts: flutterTts,
-            audioPlayer: audioPlayer,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class OccupationWidget extends StatefulWidget {
-  final List<Occupation> occupations;
-  final FlutterTts flutterTts;
-  final AudioPlayer audioPlayer;
-  const OccupationWidget({
-    super.key,
-    required this.occupations,
-    required this.flutterTts,
-    required this.audioPlayer,
-  });
-
-  @override
-  State<OccupationWidget> createState() => _OccupationWidgetState();
-}
-
-class _OccupationWidgetState extends State<OccupationWidget> {
-  int currentIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    Occupation occupation = widget.occupations[currentIndex];
-    return Column(
-      children: [
-        const SizedBox(height: ConstantDimensions.heightSmall),
-        Container(
-          width: ConstantDimensions.widthExtraLarge * 7,
-          height: MediaQuery.of(context).size.height / 2,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(8.0),
-            color: occupation.backgroundColor,
-          ),
-          child: AnimatedSize(
-            duration: const Duration(milliseconds: 500),
-            child: SvgPicture.asset(
-              occupation.svgAsset,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ),
-        const SizedBox(height: ConstantDimensions.heightMedium),
-        Text(
-          occupation.name,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: ConstantDimensions.heightSmall),
-        Padding(
-          padding: const EdgeInsets.only(
-            right: 8.0,
-            left: 8.0,
-          ),
-          child: Text(
-            occupation.description,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 22.0,
-            ),
-          ),
-        ),
-        const SizedBox(height: ConstantDimensions.heightLarge),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: SafeArea(
+        child: Column(
           children: [
-            IconButton(
-              onPressed: _previousOccupation,
-              icon: const Icon(Icons.arrow_back),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF26A69A), Color(0xFF42A5F5)],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.teal.withValues(alpha: 0.25),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.work_rounded, color: Colors.white, size: 30),
+                    SizedBox(width: 14),
+                    Expanded(
+                      child: Text(
+                        "Discover what community helpers do every day! Tap any job to learn more.",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(width: ConstantDimensions.widthMedium),
-            ElevatedButton(
-              onPressed: () {
-                AppFunctions().readName(occupation.name);
-              },
-              child: const Text("Play Sound"),
-            ),
-            const SizedBox(width: ConstantDimensions.widthMedium),
-            IconButton(
-              onPressed: _nextOccupation,
-              icon: const Icon(Icons.arrow_forward),
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 14,
+                  mainAxisSpacing: 14,
+                  childAspectRatio: 0.86,
+                ),
+                itemCount: occupations.length,
+                itemBuilder: (context, index) {
+                  final occupation = occupations[index];
+                  return GestureDetector(
+                    onTap: () {
+                      _speak(occupation.name);
+                      _showOccupationCard(index);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E1E26) : Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: occupation.backgroundColor.withValues(alpha: 0.35),
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: occupation.backgroundColor.withValues(alpha: 0.12),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: SvgPicture.asset(
+                                occupation.svgAsset,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: occupation.backgroundColor.withValues(alpha: 0.14),
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(22),
+                                bottomRight: Radius.circular(22),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  occupation.name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 18,
+                                    color: isDark ? Colors.white : Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Icon(
+                                  Icons.volume_up_rounded,
+                                  size: 18,
+                                  color: occupation.backgroundColor,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
-      ],
+      ),
     );
-  }
-
-  _nextOccupation() {
-    setState(() {
-      currentIndex = (currentIndex + 1) % widget.occupations.length;
-    });
-  }
-
-  _previousOccupation() {
-    setState(() {
-      currentIndex = (currentIndex - 1 + widget.occupations.length) %
-          widget.occupations.length;
-    });
   }
 }

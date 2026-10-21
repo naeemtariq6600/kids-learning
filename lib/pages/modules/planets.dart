@@ -1,157 +1,348 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:learn/utils/constants.dart';
-import 'package:learn/utils/functions.dart';
-import '../../utils/const_dimensions.dart';
-import 'package:learn/models/planet_model.dart';
 import 'planets_test.dart';
 
-class PlanetsPage extends StatelessWidget {
+class PlanetsPage extends StatefulWidget {
+  const PlanetsPage({Key? key}) : super(key: key);
 
-  final FlutterTts flutterTts = FlutterTts();
-  final AudioPlayer audioPlayer = AudioPlayer();
+  @override
+  State<PlanetsPage> createState() => _PlanetsPageState();
+}
 
-  PlanetsPage({Key? key}) : super(key: key);
- void _navigateToPlanetsTestPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PlanetsTestPage()),
+class _PlanetsPageState extends State<PlanetsPage> {
+  final FlutterTts _flutterTts = FlutterTts();
+
+  Future<void> _speak(String text) async {
+    try {
+      await _flutterTts.stop();
+      await _flutterTts.setSpeechRate(0.42);
+      await _flutterTts.setPitch(1.05);
+      await _flutterTts.speak(text);
+    } catch (_) {}
+  }
+
+  void _showPlanetCard(int initialIndex) {
+    int index = initialIndex;
+    final planets = AppConstants.planets;
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (dialogContext, setDialogState) {
+            final planet = planets[index];
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 420, maxHeight: 560),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(
+                    color: planet.backgroundColor.withValues(alpha: 0.6),
+                    width: 2.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: planet.backgroundColor.withValues(alpha: 0.35),
+                      blurRadius: 26,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(22),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            "Planet ${index + 1} / ${planets.length}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: SvgPicture.asset(
+                          planet.svgAsset,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      planet.name,
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      planet.description,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 14,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton.filledTonal(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withValues(alpha: 0.2),
+                            padding: const EdgeInsets.all(12),
+                          ),
+                          onPressed: () {
+                            setDialogState(() {
+                              index = (index - 1 + planets.length) % planets.length;
+                            });
+                            _speak(planets[index].name);
+                          },
+                          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 28),
+                        ),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: planet.backgroundColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            elevation: 4,
+                          ),
+                          onPressed: () => _speak("${planet.name}. ${planet.description}"),
+                          icon: const Icon(Icons.volume_up_rounded, size: 26),
+                          label: const Text(
+                            "Explore",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                        ),
+                        IconButton.filledTonal(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withValues(alpha: 0.2),
+                            padding: const EdgeInsets.all(12),
+                          ),
+                          onPressed: () {
+                            setDialogState(() {
+                              index = (index + 1) % planets.length;
+                            });
+                            _speak(planets[index].name);
+                          },
+                          icon: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 28),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
+
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final planets = AppConstants.planets;
+
     return Scaffold(
+      backgroundColor: const Color(0xFF0B1021),
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
         title: const Text(
-          AppConstants.solar,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          "Solar System 🪐",
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 24, color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.assignment),
-            onPressed: () {
-              _navigateToPlanetsTestPage(context);
-            },
+          Container(
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.quiz_rounded, color: Colors.orangeAccent),
+              tooltip: "Planet Quiz",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PlanetsTestPage()),
+                );
+              },
+            ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: PlanetWidget(
-            planets: AppConstants.planets,
-            flutterTts: flutterTts,
-            audioPlayer: audioPlayer,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PlanetWidget extends StatefulWidget {
-  final List<Planet> planets;
-  final FlutterTts flutterTts;
-  final AudioPlayer audioPlayer;
-
-  const PlanetWidget({
-    Key? key,
-    required this.planets,
-    required this.flutterTts,
-    required this.audioPlayer,
-  }) : super(key: key);
-
-  @override
-  _PlanetWidgetState createState() => _PlanetWidgetState();
-}
-
-class _PlanetWidgetState extends State<PlanetWidget> {
-  int currentIndex = 0;
-
-  final _animationDuration = const Duration(milliseconds: 500);
-
-  @override
-  Widget build(BuildContext context) {
-    Planet planet = widget.planets[currentIndex];
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: _navigateToNextPlanet,
-          child: AnimatedContainer(
-            duration: _animationDuration,
-            width: ConstantDimensions.widthExtraLarge * 7,
-            height: MediaQuery.of(context).size.height * 0.6,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black),
-              borderRadius: BorderRadius.circular(8.0),
-              color: planet.backgroundColor,
-            ),
-            child: Center(
-              child: AnimatedSize(
-                duration: _animationDuration,
-                child: SvgPicture.asset(
-                  planet.svgAsset,
-                  fit: BoxFit.contain,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF651FFF), Color(0xFF00E5FF)],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.cyan.withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 30),
+                    SizedBox(width: 14),
+                    Expanded(
+                      child: Text(
+                        "Journey through space! Tap any planet to explore fascinating cosmic facts.",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
-        ),
-        const SizedBox(height: ConstantDimensions.heightMedium),
-        Text(
-          planet.description,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: ConstantDimensions.heightMedium),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: _navigateToPreviousPlanet,
-              icon: const Icon(Icons.arrow_back),
-            ),
-            const SizedBox(width: ConstantDimensions.widthMedium),
-            ElevatedButton(
-              onPressed: () {
-                AppFunctions().readName(planet.name);
-              },
-              child: const Text('Play Sound'),
-            ),
-            const SizedBox(width: ConstantDimensions.widthMedium),
-            IconButton(
-              onPressed: _navigateToNextPlanet,
-              icon: const Icon(Icons.arrow_forward),
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 14,
+                  mainAxisSpacing: 14,
+                  childAspectRatio: 0.86,
+                ),
+                itemCount: planets.length,
+                itemBuilder: (context, index) {
+                  final planet = planets[index];
+                  return GestureDetector(
+                    onTap: () {
+                      _speak(planet.name);
+                      _showPlanetCard(index);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF151C33), Color(0xFF1A2342)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: planet.backgroundColor.withValues(alpha: 0.4),
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: planet.backgroundColor.withValues(alpha: 0.18),
+                            blurRadius: 12,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(18),
+                              child: SvgPicture.asset(
+                                planet.svgAsset,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: planet.backgroundColor.withValues(alpha: 0.2),
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(22),
+                                bottomRight: Radius.circular(22),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  planet.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Icon(
+                                  Icons.volume_up_rounded,
+                                  size: 18,
+                                  color: planet.backgroundColor,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
-      ],
+      ),
     );
-  }
-
-  void _navigateToNextPlanet() {
-    setState(() {
-      currentIndex = (currentIndex + 1) % widget.planets.length;
-    });
-  }
-
-  void _navigateToPreviousPlanet() {
-    setState(() {
-      currentIndex =
-          (currentIndex - 1 + widget.planets.length) % widget.planets.length;
-    });
   }
 }

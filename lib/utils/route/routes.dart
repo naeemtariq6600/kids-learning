@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learn/landing_page.dart';
 import 'package:learn/pages/about.dart';
 import 'package:learn/pages/explore.dart';
+import 'package:learn/pages/explore/drawingboard.dart';
 import 'package:learn/pages/explore/quiz.dart';
 import 'package:learn/pages/favorite.dart';
 import 'package:learn/pages/fruits.dart';
@@ -31,15 +32,15 @@ class Routers {
       case AllRoutesConstant.atozRoute:
         return slidePageRoute(const AtoZ());
       case AllRoutesConstant.birdsRoute:
-        return slidePageRoute(BirdsPage());
+        return slidePageRoute(const BirdsPage());
       case AllRoutesConstant.shapesRoute:
         return slidePageRoute(const ShapesPage());
       case AllRoutesConstant.partsRoute:
         return slidePageRoute(const PartsPage());
       case AllRoutesConstant.solarRoute:
-        return slidePageRoute(PlanetsPage());
+        return slidePageRoute(const PlanetsPage());
       case AllRoutesConstant.animalRoute:
-        return slidePageRoute(AnimalsPage());
+        return slidePageRoute(const AnimalsPage());
       case AllRoutesConstant.numberRoute:
         return slidePageRoute(const NumbersPage());
       case AllRoutesConstant.colourRoute:
@@ -55,13 +56,15 @@ class Routers {
       case AllRoutesConstant.seasonRoute:
         return slidePageRoute(const SeasonsPage());
       case AllRoutesConstant.occupationRoute:
-        return slidePageRoute(OccupationPage());
+        return slidePageRoute(const OccupationPage());
       case AllRoutesConstant.fruitRoute:
-        return slidePageRoute(FruitsPage());
+        return slidePageRoute(const FruitsPage());
       case AllRoutesConstant.landingRoute:
         return slidePageRoute(const LandingPage());
       case AllRoutesConstant.mainhomeRoute:
         return slidePageRoute(const MainHome());
+      case AllRoutesConstant.drawingboardRoute:
+        return slidePageRoute(const DrawingBoardPage());
 
       default:
         return MaterialPageRoute(

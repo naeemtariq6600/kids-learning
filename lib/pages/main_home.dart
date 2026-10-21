@@ -8,7 +8,6 @@ import 'package:learn/pages/explore/explore.dart';
 import 'package:learn/pages/favorite.dart';
 import 'package:learn/pages/home.dart';
 import 'package:learn/widgets/navbar/navbar.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 
 class MainHome extends StatefulWidget {
   final AdaptiveThemeMode? savedThemeMode;
@@ -32,7 +31,7 @@ class _MainHomeState extends State<MainHome> {
     _pageController = PageController();
   }
 
-  bool _onBackPressed(bool canPop) {
+  void _handleBackPress() {
     DateTime now = DateTime.now();
     if (currentBackPressTime == null ||
         now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
@@ -42,11 +41,9 @@ class _MainHomeState extends State<MainHome> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
       );
-      canPop = false;
     } else {
-      canPop = true;
+      Navigator.of(context).pop();
     }
-    return canPop;
   }
 
   @override
@@ -58,7 +55,11 @@ class _MainHomeState extends State<MainHome> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: _onBackPressed,
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handleBackPress();
+      },
       child: AdaptiveTheme(
         light: ThemeData.light(),
         dark: ThemeData.dark(),
