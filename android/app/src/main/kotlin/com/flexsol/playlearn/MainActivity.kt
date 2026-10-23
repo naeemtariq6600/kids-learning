@@ -1,4 +1,4 @@
-package vdrs.sappu.lafk.learn
+package com.flexsol.playlearn
 
 import io.flutter.embedding.android.FlutterActivity
 

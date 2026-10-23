@@ -8,6 +8,10 @@ class MyDrawer extends StatelessWidget {
 
   void _navigateTo(BuildContext context, String routeName) {
     Navigator.pop(context); // Close the drawer first for smooth transition
+    if (routeName == AllRoutesConstant.homeRoute ||
+        routeName == AllRoutesConstant.mainhomeRoute) {
+      return;
+    }
     Navigator.pushNamed(context, routeName);
   }
 
@@ -76,13 +80,8 @@ class MyDrawer extends StatelessWidget {
                       ),
                       child: ClipOval(
                         child: Image.asset(
-                          "assets/images/studying.png",
+                          "assets/images/app_logo.png",
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Image.asset(
-                            "assets/images/dp.png",
-                            fit: BoxFit.cover,
-                          ),
                         ),
                       ),
                     ),
@@ -108,12 +107,21 @@ class MyDrawer extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
                 const Text(
-                  "Kids Learn",
+                  "PlayLearn",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.3,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                const Text(
+                  "Kids Academy",
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 4),

@@ -27,7 +27,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "vdrs.sappu.lafk.learn"
+    namespace = "com.flexsol.playlearn"
     compileSdk = 36
     ndkVersion = "29.0.14033849"
 
@@ -50,20 +50,26 @@ android {
     }
 
     defaultConfig {
-        applicationId = "vdrs.sappu.lafk.learn"
+        applicationId = "com.flexsol.playlearn"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutterVersionCode.toInt()
-        versionName = flutterVersionName
+        versionCode = 16
+        versionName = "1.0.0"
         multiDexEnabled = true
     }
 
     signingConfigs {
-        maybeCreate("release").apply {
-            keyAlias = keystoreProperties.getProperty("keyAlias")
-            keyPassword = keystoreProperties.getProperty("keyPassword")
-            storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
-            storePassword = keystoreProperties.getProperty("storePassword")
+        create("release") {
+            val alias = keystoreProperties.getProperty("keyAlias") ?: "flexsol"
+            val keyPass = keystoreProperties.getProperty("keyPassword") ?: "123456789"
+            val storePass = keystoreProperties.getProperty("storePassword") ?: "123456789"
+            val storePath = keystoreProperties.getProperty("storeFile") ?: "key/flexsol.jks"
+
+            keyAlias = alias
+            keyPassword = keyPass
+            storePassword = storePass
+            val localKeyFile = file(storePath)
+            storeFile = if (localKeyFile.exists()) localKeyFile else rootProject.file(storePath)
         }
     }
 

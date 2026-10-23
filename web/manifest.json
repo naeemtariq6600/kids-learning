@@ -1,11 +1,11 @@
 {
-    "name": "learn",
-    "short_name": "learn",
+    "name": "PlayLearn: Kids Academy",
+    "short_name": "PlayLearn",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FD725B",
+    "theme_color": "#FD725B",
+    "description": "PlayLearn: Kids Academy - Interactive early learning app for kids",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

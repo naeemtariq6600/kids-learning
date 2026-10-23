@@ -13,7 +13,7 @@ class AboutPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: const Text(
-          "About Learn 🌟",
+          "About PlayLearn 🌟",
           style: TextStyle(fontWeight: FontWeight.w900, fontSize: 24),
         ),
       ),
@@ -44,20 +44,29 @@ class AboutPage extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(18),
+                      width: 80,
+                      height: 80,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.school_rounded,
-                        size: 48,
                         color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.15),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          "assets/images/app_logo.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 14),
                     const Text(
-                      "Learn",
+                      "PlayLearn",
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w900,
@@ -67,7 +76,7 @@ class AboutPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      "Interactive Early Learning for Kids",
+                      "Kids Academy • Early Learning",
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.white70,
@@ -103,7 +112,7 @@ class AboutPage extends StatelessWidget {
                 iconColor: Colors.amber,
                 title: "Our Mission",
                 child: const Text(
-                  "Learn is crafted to spark curiosity, build confidence, and make foundational learning delightful for young minds through vibrant visuals, voice pronunciations, and playful quizzes.",
+                  "PlayLearn: Kids Academy is crafted to spark curiosity, build confidence, and make foundational learning delightful for young minds through vibrant visuals, voice pronunciations, and playful quizzes.",
                   style: TextStyle(fontSize: 14, height: 1.45),
                 ),
               ),

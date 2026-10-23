@@ -9,7 +9,6 @@ import 'package:learn/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-DateTime? currentBackPressTime;
 bool visitedGettingStartedPageOnceBool = false; //to store the value of
 
 void main() async {
@@ -42,7 +41,7 @@ class MyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Learn',
+          title: 'PlayLearn: Kids Academy',
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
           themeMode: themeProvider.themeMode,

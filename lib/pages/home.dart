@@ -135,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(width: 10),
             Text(
-              "Kids Learn",
+              "PlayLearn",
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 20,
@@ -234,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           const SizedBox(height: 8),
                           const Text(
-                            "Let's Learn & Play!",
+                            "Welcome to PlayLearn!",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 22,

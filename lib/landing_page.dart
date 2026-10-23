@@ -76,7 +76,7 @@ class _LandingPageState extends State<LandingPage> with SingleTickerProviderStat
                       Text("✨", style: TextStyle(fontSize: 16)),
                       SizedBox(width: 8),
                       Text(
-                        "Learning Made Magical",
+                        "PlayLearn: Kids Academy",
                         style: TextStyle(
                           color: Colors.deepPurple,
                           fontWeight: FontWeight.w900,
@@ -124,10 +124,10 @@ class _LandingPageState extends State<LandingPage> with SingleTickerProviderStat
                         colors: [Color(0xFFFF6D00), Color(0xFFFF4081), Color(0xFF7C4DFF)],
                       ).createShader(bounds),
                       child: const Text(
-                        "Learn & Play!",
+                        "PlayLearn!",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 40,
+                          fontSize: 42,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
                           letterSpacing: 0.5,
