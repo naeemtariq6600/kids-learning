@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learn/services/analytics_service.dart';
 import 'package:learn/utils/route/route_constant.dart';
 
 class ExplorePage extends StatelessWidget {
@@ -169,6 +170,7 @@ class ExplorePage extends StatelessWidget {
                         emoji: "🎯",
                         gradient: const [Color(0xFFEC4899), Color(0xFFF43F5E)],
                         onTap: () {
+                          AnalyticsService.instance.logEvent(name: 'open_feature', parameters: {'feature_name': 'Quiz'});
                           Navigator.pushNamed(context, AllRoutesConstant.quizRoute);
                         },
                       ),
@@ -182,6 +184,7 @@ class ExplorePage extends StatelessWidget {
                         emoji: "🎨",
                         gradient: const [Color(0xFF0D9488), Color(0xFF10B981)],
                         onTap: () {
+                          AnalyticsService.instance.logEvent(name: 'open_feature', parameters: {'feature_name': 'Drawing Board'});
                           Navigator.pushNamed(context, AllRoutesConstant.drawingboardRoute);
                         },
                       ),
@@ -457,6 +460,10 @@ class _ExploreCardState extends State<_ExploreCard>
             onTapUp: (_) => _controller.reverse(),
             onTapCancel: () => _controller.reverse(),
             onTap: () {
+              AnalyticsService.instance.logModuleSelected(
+                moduleName: item.title,
+                category: item.category,
+              );
               Navigator.pushNamed(context, item.route);
             },
             child: Container(

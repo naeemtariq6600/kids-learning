@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "371735831898",
+    "project_id": "flexsol-23b16",
+    "storage_bucket": "flexsol-23b16.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371735831898:android:2b4e7712fedbe668c47f63",
+        "android_client_info": {
+          "package_name": "com.flexsol.playlearn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBO8Yzu08zTY8R8Eu_D5G21ku6x0V7u6Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371735831898:android:ccaeda2cf91575bac47f63",
+        "android_client_info": {
+          "package_name": "com.flexsol.videodownloader"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBO8Yzu08zTY8R8Eu_D5G21ku6x0V7u6Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371735831898:android:e194d01e545d4d06c47f63",
+        "android_client_info": {
+          "package_name": "com.flexsol.vidsfetch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBO8Yzu08zTY8R8Eu_D5G21ku6x0V7u6Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

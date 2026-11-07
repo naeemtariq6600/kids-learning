@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learn/services/analytics_service.dart';
 import 'package:learn/theme_provider.dart';
 import 'package:learn/utils/route/route_constant.dart';
 import 'package:learn/widgets/drawer.dart';
@@ -415,6 +416,7 @@ class _CategoryGridCardState extends State<_CategoryGridCard>
           onTapUp: (_) => _controller.reverse(),
           onTapCancel: () => _controller.reverse(),
           onTap: () {
+            AnalyticsService.instance.logModuleSelected(moduleName: item.title);
             Navigator.pushNamed(context, item.route);
           },
           child: Container(

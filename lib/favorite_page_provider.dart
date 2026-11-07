@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learn/services/analytics_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FavouriteScreenProvider with ChangeNotifier {
@@ -23,12 +24,20 @@ class FavouriteScreenProvider with ChangeNotifier {
     _selectedItemList.add(item);
     notifyListeners();
     saveToPrefs();
+    AnalyticsService.instance.logFavoriteToggled(
+      itemName: 'item_$item',
+      isFavorite: true,
+    );
   }
 
   void removeList(int item) {
     _selectedItemList.remove(item);
     notifyListeners();
     saveToPrefs();
+    AnalyticsService.instance.logFavoriteToggled(
+      itemName: 'item_$item',
+      isFavorite: false,
+    );
   }
 
   Future<void> loadFromPrefs() async {

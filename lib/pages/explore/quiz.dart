@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learn/services/analytics_service.dart';
 import 'package:learn/utils/constants.dart';
 import 'package:learn/utils/route/route_constant.dart';
 
@@ -58,6 +59,7 @@ class _QuizState extends State<Quiz> {
   void _showResultDialog() {
     final total = AppConstants.ques.length;
     final percentage = ((_score / total) * 100).round();
+    AnalyticsService.instance.logQuizCompleted(score: _score, totalQuestions: total);
 
     showDialog(
       context: context,

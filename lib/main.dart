@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:learn/firebase_options.dart';
+import 'package:learn/services/analytics_service.dart';
 import 'package:learn/favorite_page_provider.dart';
 import 'package:learn/landing_page.dart';
 import 'package:learn/pages/main_home.dart';
@@ -13,6 +16,17 @@ bool visitedGettingStartedPageOnceBool = false; //to store the value of
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase & Google Analytics
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await AnalyticsService.instance.logAppOpen();
+  } catch (e) {
+    debugPrint('[Firebase] Error initializing Firebase: $e');
+  }
+
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
   final prefs = await SharedPreferences.getInstance();
   visitedGettingStartedPageOnceBool =
@@ -45,6 +59,9 @@ class MyApp extends StatelessWidget {
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
           themeMode: themeProvider.themeMode,
+          navigatorObservers: [
+            AnalyticsService.instance.getAnalyticsObserver(),
+          ],
           home: visitedGettingStartedPageOnceBool
               ? const MainHome()
               : const LandingPage(), //if page opened for first time , show landing page (getting started page), else show home page

@@ -8,6 +8,7 @@ import 'package:learn/pages/about.dart';
 import 'package:learn/pages/explore/explore.dart';
 import 'package:learn/pages/favorite.dart';
 import 'package:learn/pages/home.dart';
+import 'package:learn/services/analytics_service.dart';
 import 'package:learn/widgets/navbar/navbar.dart';
 
 class MainHome extends StatefulWidget {
@@ -101,6 +102,10 @@ class _MainHomeState extends State<MainHome> {
                   ],
                   onPageChanged: (index) {
                     context.read<IndexCubit>().changeIndex(index);
+                    const tabNames = ['Home', 'Explore', 'Favorites', 'About'];
+                    if (index >= 0 && index < tabNames.length) {
+                      AnalyticsService.instance.logScreenView(screenName: tabNames[index]);
+                    }
                   },
                 ),
                 bottomNavigationBar:
