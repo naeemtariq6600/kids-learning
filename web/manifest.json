@@ -1,11 +1,11 @@
 {
-    "name": "PlayLearn: Kids Academy",
+    "name": "Kids Learning: ABC 123 Animals",
     "short_name": "PlayLearn",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#FD725B",
     "theme_color": "#FD725B",
-    "description": "PlayLearn: Kids Academy - Interactive early learning app for kids",
+    "description": "Kids Learning: ABC 123 Animals - Interactive early learning app for kids",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

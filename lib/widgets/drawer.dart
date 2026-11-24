@@ -117,7 +117,7 @@ class MyDrawer extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 const Text(
-                  "Kids Academy",
+                  "ABC 123 Animals",
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 13,

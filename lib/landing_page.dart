@@ -75,12 +75,16 @@ class _LandingPageState extends State<LandingPage> with SingleTickerProviderStat
                     children: [
                       Text("✨", style: TextStyle(fontSize: 16)),
                       SizedBox(width: 8),
-                      Text(
-                        "PlayLearn: Kids Academy",
-                        style: TextStyle(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 13,
+                      Flexible(
+                        child: Text(
+                          "Kids Learning: ABC 123 Animals",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ],

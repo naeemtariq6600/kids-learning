@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
-        android:label="PlayLearn: Kids Academy"
+        android:label="Kids Learning: ABC 123 Animals"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

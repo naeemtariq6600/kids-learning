@@ -76,7 +76,7 @@ class AboutPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      "Kids Academy • Early Learning",
+                      "ABC, 123 & Animals • Early Learning",
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.white70,
@@ -112,7 +112,7 @@ class AboutPage extends StatelessWidget {
                 iconColor: Colors.amber,
                 title: "Our Mission",
                 child: const Text(
-                  "PlayLearn: Kids Academy is crafted to spark curiosity, build confidence, and make foundational learning delightful for young minds through vibrant visuals, voice pronunciations, and playful quizzes.",
+                  "Kids Learning: ABC 123 Animals is crafted to spark curiosity, build confidence, and make foundational learning delightful for young minds through vibrant visuals, voice pronunciations, and playful quizzes.",
                   style: TextStyle(fontSize: 14, height: 1.45),
                 ),
               ),

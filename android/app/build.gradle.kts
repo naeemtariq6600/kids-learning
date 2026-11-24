@@ -54,8 +54,8 @@ android {
         applicationId = "com.flexsol.playlearn"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 17
-        versionName = "1.0.1"
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
         multiDexEnabled = true
     }
 

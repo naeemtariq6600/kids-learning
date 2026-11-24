@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'PlayLearn: Kids Academy',
+          title: 'Kids Learning: ABC 123 Animals',
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
           themeMode: themeProvider.themeMode,
